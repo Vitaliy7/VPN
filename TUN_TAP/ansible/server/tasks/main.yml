@@ -1,0 +1,44 @@
+---
+# tasks file for server
+- name: install epel-release
+  yum:
+    name: epel-release
+    state: present
+
+- name: install soft
+  yum:
+    name:
+    - openvpn
+    - iperf3
+    state: present
+    update_cache: true
+
+- name: disable selinux
+  selinux:
+    state: disabled
+
+- name: create key openvpn
+  shell: openvpn --genkey --secret /etc/openvpn/static.key
+
+- name: copy static.key
+  copy:
+    src: /etc/openvpn/static.key
+    dest: /vagrant/static.key
+    remote_src: yes
+
+- name: create conffile server openvpn
+  copy:
+    src: server.conf
+    dest: /etc/openvpn/server.conf
+
+- name: create service_unit openvpn
+  copy:
+    src: openvpn@.service
+    dest: /etc/systemd/system/openvpn@.service
+
+- name: enable & start openvpn.service
+  systemd:
+    name: openvpn@server.service
+    state: started
+    enabled: true
+...

@@ -1,0 +1,14 @@
+---
+- name: install & configure server
+  hosts: server
+  become: yes
+  
+  roles: 
+    - server
+     
+- name: install & configure client
+  hosts: client
+  become: yes
+  
+  roles: 
+    - client
